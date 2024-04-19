@@ -3,13 +3,20 @@ package klaviyo
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
+)
+
+const (
+	endpoint       = "https://a.klaviyo.com/api/"
+	defaultVersion = "2024-02-15"
 )
 
 type Client struct {
 	APIKey    string
 	APISecret string
+	Version   string
 	Profile   ProfileService
 	Event     EventService
 	Metric    MetricService
@@ -17,7 +24,15 @@ type Client struct {
 	Coupon    CouponService
 }
 
-func NewClient(apiKey string) *Client {
+type Option func(c *Client)
+
+func WithVersion(version string) Option {
+	return func(c *Client) {
+		c.Version = version
+	}
+}
+
+func NewClient(apiKey string, opts ...Option) *Client {
 
 	c := &Client{
 		APIKey: apiKey,
@@ -28,6 +43,14 @@ func NewClient(apiKey string) *Client {
 	c.Metric = &MetricServiceOp{client: c}
 	c.Tag = &TagServiceOp{client: c}
 	c.Coupon = &CouponServiceOp{client: c}
+
+	for _, opt := range opts {
+		opt(c)
+	}
+
+	if c.Version == "" {
+		c.Version = defaultVersion
+	}
 
 	return c
 
@@ -45,6 +68,8 @@ func (c *Client) Request(method string, url string, body interface{}, v interfac
 		bodyReader = bytes.NewBuffer(requestJson)
 	}
 
+	url = fmt.Sprintf("%v%v", endpoint, url)
+
 	httpReq, errNewRequest := http.NewRequest(method, url, bodyReader)
 	if errNewRequest != nil {
 		return errNewRequest
@@ -52,7 +77,7 @@ func (c *Client) Request(method string, url string, body interface{}, v interfac
 
 	// Content Type
 	httpReq.Header.Add("accept", "application/json")
-	httpReq.Header.Add("revision", "2023-10-15")
+	httpReq.Header.Add("revision", c.Version)
 	httpReq.Header.Add("content-type", "application/json")
 	httpReq.Header.Add("Authorization", "Klaviyo-API-Key "+c.APIKey)
 

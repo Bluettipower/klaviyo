@@ -205,7 +205,7 @@ type ProfileResponseSubscriptionSMS struct {
 	} `json:"marketing,omitempty"`
 }
 
-const profileURL = "https://a.klaviyo.com/api/profiles/"
+const profileURL = "profiles/"
 
 func (s *ProfileServiceOp) Read(ctx context.Context, params ProfileRequest) (*ProfileResponse, error) {
 

@@ -56,7 +56,7 @@ type CreateMetricAttributes struct {
 	Service *string `json:"service,omitempty"`
 }
 
-const metricURL = "https://a.klaviyo.com/api/metrics/"
+const metricURL = "metrics/"
 
 func (s *MetricServiceOp) Read(ctx context.Context, params MetricRequest) (*MetricResponse, error) {
 

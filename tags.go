@@ -97,7 +97,7 @@ type TagResponseAttributes struct {
 	Default   *bool   `json:"default,omitempty"`
 }
 
-const tagURL = "https://a.klaviyo.com/api/tags/"
+const tagURL = "tags/"
 
 func (s *TagServiceOp) Read(ctx context.Context, params ReadTagRequest) (*TagResponse, error) {
 
