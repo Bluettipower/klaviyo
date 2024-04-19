@@ -22,6 +22,7 @@ type Client struct {
 	Metric    MetricService
 	Tag       TagService
 	Coupon    CouponService
+	List      ListService
 }
 
 type Option func(c *Client)
@@ -43,6 +44,7 @@ func NewClient(apiKey string, opts ...Option) *Client {
 	c.Metric = &MetricServiceOp{client: c}
 	c.Tag = &TagServiceOp{client: c}
 	c.Coupon = &CouponServiceOp{client: c}
+	c.List = &ListServiceOp{client: c}
 
 	for _, opt := range opts {
 		opt(c)

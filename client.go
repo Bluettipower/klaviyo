@@ -13,7 +13,7 @@ type ClientSerivceOp struct {
 }
 
 type ClientService interface {
-	CreateClientSubscription(ctx context.Context, clientSubscription CreateClientSubscription, companyId string) error
+	CreateSubscription(ctx context.Context, clientSubscription CreateClientSubscription, companyId string) error
 }
 
 type CreateClientSubscription struct {
@@ -54,7 +54,7 @@ type CreateClientSubscriptionListData struct {
 	ID   string `json:"id,omitempty"`
 }
 
-func (s *ClientSerivceOp) CreateClientSubscription(ctx context.Context, createClientSubscription CreateClientSubscription, companyId string) error {
+func (s *ClientSerivceOp) CreateSubscription(ctx context.Context, createClientSubscription CreateClientSubscription, companyId string) error {
 
 	resource := fmt.Sprintf("%v/%v/?company_id=%s", clientBasePath, clientSubscriptionResource, companyId)
 	err := s.client.Request("POST", resource, createClientSubscription, nil)
