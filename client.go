@@ -8,7 +8,7 @@ import (
 const clientBasePath = "client"
 const clientSubscriptionResource = "subscriptions"
 
-type ClientSerivceOp struct {
+type ClientServiceOp struct {
 	client *Client
 }
 
@@ -54,7 +54,7 @@ type CreateClientSubscriptionListData struct {
 	ID   string `json:"id,omitempty"`
 }
 
-func (s *ClientSerivceOp) CreateSubscription(ctx context.Context, createClientSubscription CreateClientSubscription, companyId string) error {
+func (s *ClientServiceOp) CreateSubscription(ctx context.Context, createClientSubscription CreateClientSubscription, companyId string) error {
 
 	resource := fmt.Sprintf("%v/%v/?company_id=%s", clientBasePath, clientSubscriptionResource, companyId)
 	err := s.client.Request("POST", resource, createClientSubscription, nil)
