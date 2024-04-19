@@ -205,7 +205,7 @@ type ProfileResponseSubscriptionSMS struct {
 	} `json:"marketing,omitempty"`
 }
 
-const profileURL = "profiles/"
+const profileURL = "api/profiles/"
 
 func (s *ProfileServiceOp) Read(ctx context.Context, params ProfileRequest) (*ProfileResponse, error) {
 

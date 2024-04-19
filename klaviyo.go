@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	endpoint       = "https://a.klaviyo.com/api/"
+	endpoint       = "https://a.klaviyo.com/"
 	defaultVersion = "2024-02-15"
 )
 

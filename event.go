@@ -73,7 +73,7 @@ type CreateEventAttributes struct {
 	Profile    *CreateProfile `json:"profile,omitempty"`
 }
 
-const eventURL = "events/"
+const eventURL = "api/events/"
 
 func (s *EventServiceOp) Read(ctx context.Context, params ReadRequest) (*EventResponse, error) {
 

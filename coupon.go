@@ -158,8 +158,8 @@ type CouponCodeResponseAttributes struct {
 	Status     *string `json:"status,omitempty"`
 }
 
-const couponURL = "coupons/"
-const couponCodeURL = "coupon-codes/"
+const couponURL = "api/coupons/"
+const couponCodeURL = "api/coupon-codes/"
 
 func (s *CouponServiceOp) Read(ctx context.Context, params ReadCouponRequest) (*CouponResponse, error) {
 

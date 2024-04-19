@@ -97,7 +97,7 @@ type TagResponseAttributes struct {
 	Default   *bool   `json:"default,omitempty"`
 }
 
-const tagURL = "tags/"
+const tagURL = "api/tags/"
 
 func (s *TagServiceOp) Read(ctx context.Context, params ReadTagRequest) (*TagResponse, error) {
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-const listBasePath = "lists"
+const listBasePath = "api/lists"
 
 type ListServiceOp struct {
 	client *Client

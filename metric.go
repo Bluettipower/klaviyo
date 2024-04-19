@@ -56,7 +56,7 @@ type CreateMetricAttributes struct {
 	Service *string `json:"service,omitempty"`
 }
 
-const metricURL = "metrics/"
+const metricURL = "api/metrics/"
 
 func (s *MetricServiceOp) Read(ctx context.Context, params MetricRequest) (*MetricResponse, error) {
 
