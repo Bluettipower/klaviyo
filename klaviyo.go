@@ -92,6 +92,16 @@ func (c *Client) Request(method string, url string, body interface{}, v interfac
 	// fmt.Println(resp)
 	// fmt.Println()
 	// fmt.Println(errDo)
+	if resp.StatusCode >= 400 {
+		var errorResponse ErrorResponse
+		decoder := json.NewDecoder(resp.Body)
+		errDecode := decoder.Decode(&errorResponse)
+		if errDecode != nil {
+			return errDecode
+		}
+		return fmt.Errorf("klaviyo API Error: %s", errorResponse.Errors[0].Detail)
+
+	}
 
 	if resp != nil {
 		defer resp.Body.Close()
@@ -108,4 +118,17 @@ func (c *Client) Request(method string, url string, body interface{}, v interfac
 		}
 	}
 	return nil
+}
+
+type ErrorResponse struct {
+	Errors []struct {
+		ID     string `json:"id"`
+		Status int    `json:"status"`
+		Code   string `json:"code"`
+		Title  string `json:"title"`
+		Detail string `json:"detail"`
+		Source struct {
+			Pointer string `json:"pointer"`
+		} `json:"source"`
+	} `json:"errors"`
 }
