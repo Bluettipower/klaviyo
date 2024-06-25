@@ -17,7 +17,7 @@ type ClientService interface {
 }
 
 type CreateClientSubscription struct {
-	Data CreateClientSubscriptionData `json:"data,omitempty"`
+	Data *CreateClientSubscriptionData `json:"data,omitempty"`
 }
 
 type CreateClientSubscriptionData struct {
@@ -32,7 +32,7 @@ type CreateClientSubscriptionAttributes struct {
 }
 
 type CreateClientSubscriptionProfile struct {
-	Data CreateClientSubscriptionProfileData `json:"data,omitempty"`
+	Data *CreateClientSubscriptionProfileData `json:"data,omitempty"`
 }
 
 type CreateClientSubscriptionProfileData struct {
@@ -46,7 +46,7 @@ type CreateClientSubscriptionRelationships struct {
 }
 
 type CreateClientSubscriptionList struct {
-	Data CreateClientSubscriptionListData `json:"data,omitempty"`
+	Data *CreateClientSubscriptionListData `json:"data,omitempty"`
 }
 
 type CreateClientSubscriptionListData struct {
