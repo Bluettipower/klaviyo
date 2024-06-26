@@ -14,6 +14,73 @@ type ProfileService interface {
 	Browse(context.Context, ProfileRequest) (*ProfilesResponse, error)
 	Edit(context.Context, EditProfile) (*ProfilesResponse, error)
 	Create(context.Context, CreateProfile) (*ProfilesResponse, error)
+	SubscribeProfiles(context.Context, SubscribeProfiles) error
+	BulkSubscribeByEmailsAndListID(ctx context.Context, emails []string, listID, customSource string) error
+}
+
+type SubscribeProfiles struct {
+	Data *SubscribeProfilesData `json:"data,omitempty"`
+}
+
+type SubscribeProfilesData struct {
+	Type          string                       `json:"type,omitempty"`
+	Attributes    *SubscribeProfilesAttributes `json:"attributes,omitempty"`
+	Relationships *Relationships               `json:"relationships,omitempty"`
+}
+
+type SubscribeProfilesAttributes struct {
+	CustomSource string                     `json:"custom_source,omitempty"`
+	Profiles     *SubscribeProfilesProfiles `json:"profiles,omitempty"`
+}
+
+type SubscribeProfilesProfiles struct {
+	Data []SubscribeProfilesProfile `json:"data,omitempty"`
+}
+
+type SubscribeProfilesProfile struct {
+	Type       string                              `json:"type,omitempty"`
+	ID         string                              `json:"id,omitempty"`
+	Attributes *SubscribeProfilesProfileAttributes `json:"attributes,omitempty"`
+}
+
+type SubscribeProfilesProfileAttributes struct {
+	Email         string                                 `json:"email,omitempty"`
+	PhoneNumber   string                                 `json:"phone_number,omitempty"`
+	Subscriptions *SubscribeProfilesProfileSubscriptions `json:"subscriptions,omitempty"`
+}
+
+type SubscribeProfilesProfileSubscriptions struct {
+	Email *SubscribeProfilesProfileSubscriptionEmail `json:"email,omitempty"`
+	SMS   *SubscribeProfilesProfileSubscriptionSMS   `json:"sms,omitempty"`
+}
+
+type SubscribeProfilesProfileSubscriptionEmail struct {
+	Marketing *SubscribeProfilesProfileSubscriptionEmailMarketing `json:"marketing,omitempty"`
+}
+
+type SubscribeProfilesProfileSubscriptionEmailMarketing struct {
+	Consent string `json:"consent,omitempty"`
+}
+
+type SubscribeProfilesProfileSubscriptionSMS struct {
+	Marketing *SubscribeProfilesProfileSubscriptionSMSMarketing `json:"marketing,omitempty"`
+}
+
+type SubscribeProfilesProfileSubscriptionSMSMarketing struct {
+	Consent string `json:"consent,omitempty"`
+}
+
+type Relationships struct {
+	List *RelationshipsList `json:"list,omitempty"`
+}
+
+type RelationshipsList struct {
+	Data *RelationshipsListData `json:"data,omitempty"`
+}
+
+type RelationshipsListData struct {
+	Type string `json:"type,omitempty"`
+	ID   string `json:"id,omitempty"`
 }
 
 type ProfileRequest struct {
@@ -206,6 +273,7 @@ type ProfileResponseSubscriptionSMS struct {
 }
 
 const profileURL = "api/profiles/"
+const bulkSubscriptionURL = "/api/profile-subscription-bulk-create-jobs/"
 
 func (s *ProfileServiceOp) Read(ctx context.Context, params ProfileRequest) (*ProfileResponse, error) {
 
@@ -256,4 +324,44 @@ func (s *ProfileServiceOp) Create(ctx context.Context, params CreateProfile) (*P
 	}
 
 	return &resp, nil
+}
+
+func (s *ProfileServiceOp) SubscribeProfiles(ctx context.Context, params SubscribeProfiles) error {
+	errRequest := s.client.Request("POST", bulkSubscriptionURL, params, nil)
+	return errRequest
+}
+
+func (s *ProfileServiceOp) BulkSubscribeByEmailsAndListID(ctx context.Context, emails []string, listID, customSource string) error {
+	var profiles []SubscribeProfilesProfile
+	for _, email := range emails {
+		profiles = append(profiles, SubscribeProfilesProfile{
+			Type: "profile",
+			Attributes: &SubscribeProfilesProfileAttributes{
+				Email: email,
+			},
+		})
+	}
+
+	params := SubscribeProfiles{
+		Data: &SubscribeProfilesData{
+			Type: "profile-subscription-bulk-create-job",
+			Attributes: &SubscribeProfilesAttributes{
+				CustomSource: customSource,
+				Profiles: &SubscribeProfilesProfiles{
+					Data: profiles,
+				},
+			},
+			Relationships: &Relationships{
+				List: &RelationshipsList{
+					Data: &RelationshipsListData{
+						Type: "list",
+						ID:   listID,
+					},
+				},
+			},
+		},
+	}
+
+	errRequest := s.client.Request("POST", bulkSubscriptionURL, params, nil)
+	return errRequest
 }
